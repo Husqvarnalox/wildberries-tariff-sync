@@ -29,7 +29,7 @@ APP_PORT=5000
 WBTOKEN=токен
 
 GOOGLE_CREDENTIALS_PATH=./google-credentials.json
-SPREADSHEET_IDS=id_таблицы_1,id_таблицы_2,id_таблицы_N
+SPREADSHEET_IDS=id_таблицы
 
 (Если не хочется хранить список таблиц в `.env`, можно добавлять их в БД в таблицу `spreadsheets`)
 
