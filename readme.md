@@ -20,8 +20,11 @@
 Заполните `.env`:
 
 POSTGRES_PORT=5432
+
 POSTGRES_DB=postgres
+
 POSTGRES_USER=postgres
+
 POSTGRES_PASSWORD=postgres
 
 APP_PORT=5000
@@ -29,6 +32,7 @@ APP_PORT=5000
 WBTOKEN=токен
 
 GOOGLE_CREDENTIALS_PATH=./google-credentials.json
+
 SPREADSHEET_IDS=id_таблицы
 
 (Если не хочется хранить список таблиц в `.env`, можно добавлять их в БД в таблицу `spreadsheets`)
