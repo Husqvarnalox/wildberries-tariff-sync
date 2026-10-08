@@ -1,5 +1,6 @@
 import { WBApiService } from "./wb-api.service.js";
 import { TariffsDBService } from "./tariffs-db.service.js";
+import { calculateCoefficient, parseNumber } from "./tariff-parsing.js";
 
 export class TariffsSyncService {
     private wbApi: WBApiService;
@@ -21,7 +22,7 @@ export class TariffsSyncService {
 
         try {
             console.log("Fetching tariffs from WB API...");
-            
+
             const response = await this.wbApi.fetchTariffs();
             const currentDate = new Date().toISOString().split("T")[0];
 
@@ -30,16 +31,16 @@ export class TariffsSyncService {
             const tariffs = warehouseList
                 .map((warehouse) => {
                     try {
-                        const coefficient = this.calculateCoefficient(warehouse);
-                        
+                        const coefficient = calculateCoefficient(warehouse);
+
                         const tariff = {
                             date: currentDate,
                             warehouse_name: warehouse.warehouseName,
                             box_delivery_and_storage_expr: this.buildExpr(warehouse),
-                            box_delivery_base: this.parseNumber(warehouse.boxDeliveryBase),
-                            box_delivery_liter: this.parseNumber(warehouse.boxDeliveryLiter),
-                            box_storage_base: this.parseNumber(warehouse.boxStorageBase),
-                            box_storage_liter: this.parseNumber(warehouse.boxStorageLiter),
+                            box_delivery_base: parseNumber(warehouse.boxDeliveryBase),
+                            box_delivery_liter: parseNumber(warehouse.boxDeliveryLiter),
+                            box_storage_base: parseNumber(warehouse.boxStorageBase),
+                            box_storage_liter: parseNumber(warehouse.boxStorageLiter),
                             coefficient,
                         };
 
@@ -64,30 +65,6 @@ export class TariffsSyncService {
         } finally {
             this.isRunning = false;
         }
-    }
-
-    private calculateCoefficient(warehouse: any): number {
-        const raw = warehouse.boxDeliveryCoefExpr ?? warehouse.boxStorageCoefExpr;
-        const value = this.parseNumber(raw ?? "100");
-        // API отдаёт проценты, нормализуем в коэффициент (100 -> 1.0)
-        const coef = value / 100;
-        return isNaN(coef) || coef <= 0 ? 1.0 : coef;
-    }
-
-    private parseNumber(value: string): number {
-        if (value === undefined || value === null) {
-            return 0;
-        }
-        const trimmed = `${value}`.trim();
-        if (trimmed === "-" || trimmed === "") {
-            return 0;
-        }
-        const normalized = trimmed.replace(",", ".");
-        const num = parseFloat(normalized);
-        if (isNaN(num)) {
-            throw new Error(`Invalid number: ${value}`);
-        }
-        return num;
     }
 
     private buildExpr(warehouse: any): string {

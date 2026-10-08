@@ -61,7 +61,7 @@ export class WBApiService {
 
             const data = await response.json();
             this.validateResponse(data);
-            
+
             return data;
         } catch (error) {
             if (attempt < this.maxRetries) {

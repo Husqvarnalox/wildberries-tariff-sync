@@ -76,7 +76,7 @@ export class TariffsDBService {
                 "box_delivery_liter",
                 "box_storage_base",
                 "box_storage_liter",
-                "coefficient"
+                "coefficient",
             )
             .where("date", date)
             .orderBy(this.defaultOrder)
@@ -84,19 +84,13 @@ export class TariffsDBService {
     }
 
     async getLatestTariffs(): Promise<TariffData[]> {
-        const latestDate = await knex("wb_tariffs")
-            .max("date as max_date")
-            .first()
-            .timeout(this.queryTimeout);
+        const latestDate = await knex("wb_tariffs").max("date as max_date").first().timeout(this.queryTimeout);
 
         if (!latestDate?.max_date) {
             return [];
         }
 
-        const normalizedDate =
-            typeof latestDate.max_date === "string"
-                ? latestDate.max_date
-                : this.formatDate(latestDate.max_date);
+        const normalizedDate = typeof latestDate.max_date === "string" ? latestDate.max_date : this.formatDate(latestDate.max_date);
 
         return this.getTariffsForDate(normalizedDate);
     }
@@ -111,7 +105,7 @@ export class TariffsDBService {
                 "box_delivery_liter",
                 "box_storage_base",
                 "box_storage_liter",
-                "coefficient"
+                "coefficient",
             )
             .orderBy(this.defaultOrder)
             .timeout(this.queryTimeout);

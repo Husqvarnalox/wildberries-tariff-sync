@@ -19,14 +19,20 @@ export class SchedulerService {
         console.log("Starting scheduler...");
 
         this.syncTariffsTask();
-        this.tariffsInterval = setInterval(() => {
-            this.syncTariffsTask();
-        }, 60 * 60 * 1000);
+        this.tariffsInterval = setInterval(
+            () => {
+                this.syncTariffsTask();
+            },
+            60 * 60 * 1000,
+        );
 
         this.updateSheetsTask();
-        this.sheetsInterval = setInterval(() => {
-            this.updateSheetsTask();
-        }, 60 * 60 * 1000);
+        this.sheetsInterval = setInterval(
+            () => {
+                this.updateSheetsTask();
+            },
+            60 * 60 * 1000,
+        );
 
         console.log("Scheduler started:");
         console.log("- Tariffs sync: every hour");

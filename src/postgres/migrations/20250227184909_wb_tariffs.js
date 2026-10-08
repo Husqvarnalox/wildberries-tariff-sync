@@ -11,7 +11,7 @@ export async function up(knex) {
         table.decimal("coefficient", 10, 2).notNullable();
         table.timestamp("created_at").defaultTo(knex.fn.now());
         table.timestamp("updated_at").defaultTo(knex.fn.now());
-        
+
         table.unique(["date", "warehouse_name", "box_delivery_and_storage_expr"]);
         table.index(["date"]);
         table.index(["coefficient"]);

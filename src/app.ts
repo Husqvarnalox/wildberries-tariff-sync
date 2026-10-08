@@ -11,18 +11,14 @@ console.log("All migrations and seeds have been run");
 const scheduler = new SchedulerService();
 scheduler.start();
 
-process.on("SIGTERM", () => {
-    console.log("SIGTERM received, shutting down gracefully...");
+async function shutdown(signal: string): Promise<void> {
+    console.log(`${signal} received, shutting down...`);
     scheduler.stop();
-    knex.destroy();
+    await knex.destroy();
     process.exit(0);
-});
+}
 
-process.on("SIGINT", () => {
-    console.log("SIGINT received, shutting down gracefully...");
-    scheduler.stop();
-    knex.destroy();
-    process.exit(0);
-});
+process.on("SIGTERM", () => void shutdown("SIGTERM"));
+process.on("SIGINT", () => void shutdown("SIGINT"));
 
 console.log("Application started successfully");

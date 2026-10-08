@@ -26,11 +26,11 @@ function logMigrationList(list: [{ name: string }[], { file: string }[]]) {
 }
 
 function logSeedRun(result: [string[]]) {
-    if(result[0].length === 0) {
+    if (result[0].length === 0) {
         console.log("No seeds to run");
     }
     console.log(`Ran ${result[0].length} seed files`);
-    for(const seed of result[0]) {
+    for (const seed of result[0]) {
         console.log("- " + seed?.split(/\/|\\/).pop());
     }
 }

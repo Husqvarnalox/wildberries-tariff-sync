@@ -42,9 +42,7 @@ export class GoogleSheetsService {
                 return;
             }
 
-            const updatePromises = spreadsheetIds.map((id) =>
-                this.updateSpreadsheetSafe(sheets, id, tariffs)
-            );
+            const updatePromises = spreadsheetIds.map((id) => this.updateSpreadsheetSafe(sheets, id, tariffs));
 
             const results = await Promise.allSettled(updatePromises);
             const successCount = results.filter((r) => r.status === "fulfilled").length;
@@ -102,9 +100,7 @@ export class GoogleSheetsService {
                 .timeout(5000)
                 .then((rows) => rows.map((r) => r.spreadsheet_id).filter((id) => id));
 
-            const validStored = storedIds.filter(
-                (id) => id && id.trim() !== "" && id !== "example_spreadsheet_id"
-            );
+            const validStored = storedIds.filter((id) => id && id.trim() !== "" && id !== "example_spreadsheet_id");
             const envIds = env.SPREADSHEET_IDS.filter((id) => id && id.trim() !== "");
 
             const merged = Array.from(new Set([...validStored, ...envIds]));
@@ -120,11 +116,7 @@ export class GoogleSheetsService {
         }
     }
 
-    private async updateSpreadsheetSafe(
-        sheets: sheets_v4.Sheets,
-        spreadsheetId: string,
-        tariffs: any[]
-    ): Promise<void> {
+    private async updateSpreadsheetSafe(sheets: sheets_v4.Sheets, spreadsheetId: string, tariffs: any[]): Promise<void> {
         try {
             await this.updateSpreadsheet(sheets, spreadsheetId, tariffs);
         } catch (error) {
@@ -133,23 +125,10 @@ export class GoogleSheetsService {
         }
     }
 
-    private async updateSpreadsheet(
-        sheets: sheets_v4.Sheets,
-        spreadsheetId: string,
-        tariffs: any[]
-    ): Promise<void> {
+    private async updateSpreadsheet(sheets: sheets_v4.Sheets, spreadsheetId: string, tariffs: any[]): Promise<void> {
         await this.ensureSheetExists(sheets, spreadsheetId, this.sheetName);
 
-        const headers = [
-            "Дата",
-            "Склад",
-            "Формула",
-            "Доставка база",
-            "Доставка литр",
-            "Хранение база",
-            "Хранение литр",
-            "Коэффициент",
-        ];
+        const headers = ["Дата", "Склад", "Формула", "Доставка база", "Доставка литр", "Хранение база", "Хранение литр", "Коэффициент"];
 
         const rows = tariffs.map((t) => [
             t.date || "",
@@ -181,15 +160,9 @@ export class GoogleSheetsService {
         console.log(`Updated spreadsheet ${spreadsheetId}`);
     }
 
-    private async ensureSheetExists(
-        sheets: sheets_v4.Sheets,
-        spreadsheetId: string,
-        sheetName: string
-    ): Promise<void> {
+    private async ensureSheetExists(sheets: sheets_v4.Sheets, spreadsheetId: string, sheetName: string): Promise<void> {
         const meta = await sheets.spreadsheets.get({ spreadsheetId });
-        const hasSheet = (meta.data.sheets || []).some(
-            (sheet) => sheet.properties?.title === sheetName
-        );
+        const hasSheet = (meta.data.sheets || []).some((sheet) => sheet.properties?.title === sheetName);
 
         if (hasSheet) {
             return;

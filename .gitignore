@@ -1,5 +1,9 @@
 node_modules
-.local
-.env
 dist
+.env
 google-credentials.json
+*.tsbuildinfo
+.DS_Store
+.vscode
+.idea
+.local
