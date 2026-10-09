@@ -6,5 +6,13 @@
     "trailingComma": "all",
     "singleAttributePerLine": false,
     "quoteProps": "preserve",
-    "bracketSpacing": true
+    "bracketSpacing": true,
+    "overrides": [
+        {
+            "files": ["*.yml", "*.yaml"],
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ]
 }

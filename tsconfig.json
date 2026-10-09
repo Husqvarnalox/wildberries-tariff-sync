@@ -2,27 +2,17 @@
     "compilerOptions": {
         "strict": true,
         "module": "NodeNext",
-        "target": "es2017",
+        "moduleResolution": "NodeNext",
+        "target": "es2022",
         "esModuleInterop": true,
         "allowJs": true,
         "checkJs": false,
         "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
         "rootDir": "./src",
-        "outDir": "./dist",
-        "paths": {
-            "#*": [
-                "./src/*",
-                "./dist/*"
-            ]
-        }
+        "outDir": "./dist"
     },
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.js"
-    ],
-    "exclude": [
-        "node_modules",
-        "src/**/*.test.*",
-        "src/**/*.spec.*"
-    ]
+    "include": ["src/**/*.ts", "src/**/*.js"],
+    "exclude": ["node_modules", "dist"]
 }

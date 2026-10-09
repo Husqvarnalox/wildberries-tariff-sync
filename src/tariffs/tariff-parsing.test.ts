@@ -23,3 +23,17 @@ test("calculateCoefficient falls back to 1.0 for missing or non-positive values"
     assert.equal(calculateCoefficient({ boxDeliveryCoefExpr: "-" }), 1.0);
     assert.equal(calculateCoefficient({ boxDeliveryCoefExpr: "0" }), 1.0);
 });
+
+test("parseNumber accepts numbers and padded strings", () => {
+    assert.equal(parseNumber(12), 12);
+    assert.equal(parseNumber("  7,25 "), 7.25);
+    assert.equal(parseNumber(null), 0);
+});
+
+test("calculateCoefficient prefers the delivery expression over storage", () => {
+    assert.equal(calculateCoefficient({ boxDeliveryCoefExpr: "200", boxStorageCoefExpr: "50" }), 2);
+});
+
+test("calculateCoefficient propagates unparsable input", () => {
+    assert.throws(() => calculateCoefficient({ boxDeliveryCoefExpr: "n/a" }), /Invalid number/);
+});

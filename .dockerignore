@@ -4,7 +4,7 @@ dist
 **/dist*
 .git
 **/.env*
-!example.env
+!.env.example
 **/.DS_Store
 .vscode
 .idea
@@ -13,3 +13,7 @@ dist
 **/*.key
 **/*.tsbuildinfo
 graphify-out
+**/*.test.ts
+.github
+docs
+coverage
