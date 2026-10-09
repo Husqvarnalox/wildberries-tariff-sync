@@ -10,11 +10,14 @@ permissions:
 
 env:
   IMAGE: ghcr.io/husqvarnalox/wildberries-tariff-sync
-  # Docker Hub mirror: avoids anonymous pull rate limits on shared runners.
-  BUILDKIT_IMAGE: public.ecr.aws/vend/moby/buildkit:buildx-stable-1
 
 jobs:
   build:
+    # Each architecture is built on a native runner with the daemon's built-in
+    # BuildKit (no QEMU, no builder-container pull), so the only remote pulls
+    # are the base image and nothing depends on Docker Hub or ECR rate limits
+    # for tooling. Per-arch images are pushed under an intermediate tag and
+    # merged into one manifest list by the publish job.
     name: Build ${{ matrix.platform }}
     runs-on: ${{ matrix.runner }}
     strategy:
@@ -33,7 +36,7 @@ jobs:
           PLATFORM: ${{ matrix.platform }}
       - uses: docker/setup-buildx-action@v3
         with:
-          driver-opts: image=${{ env.BUILDKIT_IMAGE }}
+          driver: docker
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -43,41 +46,19 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE }}
-      - id: build
-        uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: ${{ matrix.platform }}
+          push: true
+          provenance: false
+          tags: ${{ env.IMAGE }}:${{ github.ref_name }}-${{ steps.platform.outputs.pair }}
           labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=gha,scope=${{ steps.platform.outputs.pair }}
-          cache-to: type=gha,mode=max,scope=${{ steps.platform.outputs.pair }}
-      - name: Export digest
-        run: |
-          mkdir -p /tmp/digests
-          touch "/tmp/digests/${DIGEST#sha256:}"
-        env:
-          DIGEST: ${{ steps.build.outputs.digest }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: digest-${{ steps.platform.outputs.pair }}
-          path: /tmp/digests/*
-          if-no-files-found: error
-          retention-days: 1
 
   publish:
     name: Publish manifest
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: /tmp/digests
-          pattern: digest-*
-          merge-multiple: true
-      - uses: docker/setup-buildx-action@v3
-        with:
-          driver-opts: image=${{ env.BUILDKIT_IMAGE }}
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -92,11 +73,11 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest
       - name: Create multi-arch manifest
-        working-directory: /tmp/digests
         run: |
           docker buildx imagetools create \
             $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf "$IMAGE@sha256:%s " *)
+            "$IMAGE:${GITHUB_REF_NAME}-linux-amd64" \
+            "$IMAGE:${GITHUB_REF_NAME}-linux-arm64"
       - name: Inspect
         run: docker buildx imagetools inspect "$IMAGE:${DOCKER_METADATA_OUTPUT_VERSION}"
 
