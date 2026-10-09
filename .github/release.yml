@@ -1,0 +1,36 @@
+# Categories for automatically generated release notes (softprops/action-gh-release
+# with generate_release_notes: true). Pull requests are grouped by label.
+changelog:
+  exclude:
+    labels:
+      - skip-changelog
+    authors:
+      - github-actions
+  categories:
+    - title: Breaking changes
+      labels:
+        - breaking-change
+    - title: Features
+      labels:
+        - feature
+        - enhancement
+    - title: Bug fixes
+      labels:
+        - bug
+    - title: Security
+      labels:
+        - security
+    - title: Documentation
+      labels:
+        - documentation
+    - title: CI and tooling
+      labels:
+        - ci
+        - github_actions
+        - docker
+    - title: Dependencies
+      labels:
+        - dependencies
+    - title: Other changes
+      labels:
+        - "*"
