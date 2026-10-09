@@ -32,6 +32,12 @@ npm run dev
 
 CI never calls the live Wildberries or Google APIs.
 
+## Editor and checkout safety
+
+- Do not commit `.vscode/` (it is git-ignored). This repository never ships `.vscode/tasks.json`; a pull request adding one, or any file under `public/fonts/`, must be rejected unless the owner explicitly asked for it.
+- Keep the VS Code user setting `"task.allowAutomaticTasks": "off"` so a malicious checkout cannot run a task on folder open.
+- The `a10-guard` check must stay green; see SECURITY.md for what it enforces. Do not add npm lifecycle scripts (`postinstall` and friends) that run local files or download anything.
+
 ## Commits and branches
 
 Use [Conventional Commits](https://www.conventionalcommits.org/): `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `ci`. Example: `fix(wb): do not retry on 400`.
