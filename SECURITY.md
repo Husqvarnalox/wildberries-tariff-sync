@@ -46,7 +46,7 @@ If any of the following appears in the repository, in a dependency, or in build 
 | --- | --- |
 | Ethereum dead-drop wallet | `0xa322E5f3D311D3080e6f0121063e9aDC2490Ef1a` |
 | Public RPC endpoints used for the dead-drop | `publicnode`, `drpc.org`, `blockscout`, `1rpc.io`; environment variable `INDEXER_URL` |
-| C2 server | `193.247.144.38`, port 443 over plain HTTP, paths `/0x/cls` and `/0x/ls` |
+| C2 server | `193.247.144.38`, `103.179.142.155`, `163.34.229.243`, `23.27.13.72`, `23.27.13.135`, `166.88.134.62`, `166.88.134.75`, `166.88.73.46`, `91.218.183.174` (rotating C2 list as of 2026-10-25; original `193.247.144.38`), port 443 over plain HTTP, paths `/0x/cls` and `/0x/ls` |
 | Payload carriers | `public/fonts/fa-solid-{400,500,600,700,900}.{woff,woff2,eot,ttf,otf}` that are JavaScript, launched by `.vscode/tasks.json` (`"runOn": "folderOpen"`, `"hide": true`, `"reveal": "never"`, for example `node ./public/fonts/fa-solid-600.eot`) |
 | Padded config loaders | `postcss.config.mjs`, `vite.config.mjs`, Next, Tailwind, webpack or ESLint configs of roughly 13 to 35 KB with an obfuscated loader, executed on `next build` or `vite build`/`vite dev` |
 | Forged commits | Author time zone `+0300` with committer time zone `-0700` and identical epoch, unsigned, message mangled by repeated UTF-8 to CP437 re-decoding (`Γ ╬ ╠ ╢ ╤ ╦ ╨ ╚ ║`) |
