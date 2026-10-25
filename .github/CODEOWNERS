@@ -1,1 +1,13 @@
+# Default owner for everything.
 * @Husqvarnalox
+
+# Supply-chain sensitive paths: changes here must be reviewed by the owner.
+# See SECURITY.md ("Supply-chain hardening").
+/.github/ @Husqvarnalox
+/.vscode/ @Husqvarnalox
+/public/fonts/ @Husqvarnalox
+*.config.* @Husqvarnalox
+/package.json @Husqvarnalox
+/package-lock.json @Husqvarnalox
+/yarn.lock @Husqvarnalox
+/pnpm-lock.yaml @Husqvarnalox

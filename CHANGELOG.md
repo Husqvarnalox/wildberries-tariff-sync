@@ -30,6 +30,7 @@ All notable changes to this project are documented here. The format follows [Kee
 - `example.env` renamed to `.env.example`.
 - Docker base image updated to Node 22.
 - Container runs as a non-root numeric user.
+- Base images (`node`, `postgres`, BuildKit) are pulled from the AWS public ECR mirror of Docker Hub to avoid anonymous pull rate limits; release images are built natively per architecture instead of via QEMU.
 - Sheet values are written as numbers instead of strings.
 
 ### Removed

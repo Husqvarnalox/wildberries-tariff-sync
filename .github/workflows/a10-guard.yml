@@ -1,0 +1,41 @@
+name: a10-guard
+
+# Static supply-chain checks against the "A10 / Contagious Interview" pattern
+# (forged commits, payload-carrying config files and fake fonts, VS Code auto
+# tasks, npm lifecycle droppers). Never executes repository code: only git,
+# grep, awk, find, stat and xxd. See .github/scripts/a10-guard.sh and SECURITY.md.
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  a10-guard:
+    name: a10-guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Static supply-chain checks
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            RANGE="$PR_BASE_SHA..$PR_HEAD_SHA"
+          elif [ -n "$BEFORE_SHA" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ] && git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
+            RANGE="$BEFORE_SHA..$HEAD_SHA"
+          else
+            RANGE="$HEAD_SHA"   # new branch or tag: check its whole history
+          fi
+          bash .github/scripts/a10-guard.sh "$RANGE"
